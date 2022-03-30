@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    window.alert(moment().format('WW-GGGG'));
+
     var beruf_id = localStorage.getItem('beruf_id');
     var klasse_id = localStorage.getItem('klasse_id');
 

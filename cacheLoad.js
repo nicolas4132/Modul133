@@ -1,9 +1,15 @@
 $(document).ready(function() {
 
-    var beruf_id = localStorage.getItem('berufs_id');
+    var beruf_id = localStorage.getItem('beruf_id');
+    var klasse_id = localStorage.getItem('klasse_id');
+
+    console.log(beruf_id)
 
     if (beruf_id != '' && beruf_id != null) {
         apiClassCall(beruf_id)
+        if (klasse_id != '' && klasse_id != null) {
+            tableFill(klasse_id);
+        }
     }
 
     $('#classSelector').change(function(e) {
@@ -28,7 +34,7 @@ $(document).ready(function() {
         $('#jobSelector').append('<option>Ihre Auswahl ... </option>');
         $.each(data, function(key, value) {
             if (value.beruf_id == localStorage.getItem('beruf_id')) {
-                $('#jobSelector').append('<option value=' + value.beruf_id + 'selected>' + value.beruf_name + '</option>')
+                $('#jobSelector').append('<option value="' + value.beruf_id + '" selected>' + value.beruf_name + '</option>')
             } else {
                 $('#jobSelector').append('<option value=' + value.beruf_id + '>' + value.beruf_name + '</option>')
             }
@@ -49,7 +55,8 @@ $(document).ready(function() {
             $.each(data, function(key, value) {
                 console.log(value)
                 if (value.klasse_id == localStorage.getItem('klasse_id')) {
-                    $('#classSelector').append('<option value=' + value.klasse_id + 'selected>' + value.klasse_longname + '</option>')
+                    console.log("hallo")
+                    $('#classSelector').append('<option value="' + value.klasse_id + '" selected>' + value.klasse_longname + '</option>')
                 } else {
                     $('#classSelector').append('<option value=' + value.klasse_id + '>' + value.klasse_longname + '</option>')
                 }
@@ -101,7 +108,7 @@ $(document).ready(function() {
                         '</td></tr>');
                 })
             } else {
-                $('#tableOutput').html('<div class="alert alert-warning">Wählen Sie eine Filiale aus ...</div>');
+                $('#tableOutput').html('<div class="alert alert-warning">Fehler...</div>');
             }
         }).fail(function() {
             $('#tableOutput').html('<div class="alert alert-danger">Fehler ... </div>');

@@ -1,22 +1,31 @@
 $(document).ready(function() {
+
     var activeWeekNumber = moment().format("WW");
     var activeYear = moment().format("GGGG");
 
     var beruf_id = localStorage.getItem('beruf_id');
     var klasse_id = localStorage.getItem('klasse_id');
 
-    console.log(beruf_id)
-
     if (beruf_id != '' && beruf_id != null) {
         apiClassCall(beruf_id)
         if (klasse_id != '' && klasse_id != null) {
             tableFill(klasse_id);
+            $('#lastWeek').show();
+            $('#nextWeek').show();
+        } else {
+            $('#lastWeek').hide();
+            $('#nextWeek').hide();
         }
+    } else {
+        $('#classSelector').append('<option>Wählen sie eine Berufsgruppe ... </option>');
+        $('#lastWeek').hide();
+        $('#nextWeek').hide();
     }
 
     $('#classSelector').change(function(e) {
         localStorage.setItem('klasse_id', this.value);
         $('#tableOutput').empty();
+        $('#week').empty();
         tableFill(this.value);
     })
 
@@ -25,6 +34,8 @@ $(document).ready(function() {
         $('#classSelector').empty();
         $('#tableOutput').empty();
         $('#week').empty();
+        $('#lastWeek').hide();
+        $('#nextWeek').hide();
         apiClassCall(this.value);
     })
 
@@ -38,9 +49,13 @@ $(document).ready(function() {
         activeWeekNumber--;
 
         localStorage.setItem('week', `${activeWeekNumber}-${activeYear}`);
+        localStorage.setItem("weekNumb", activeWeekNumber);
+        localStorage.setItem("year", activeYear);
 
-        UpdateWeekSelector();
-    })
+        updateWeekSelector();
+        updateTabeloutput(localStorage.getItem('week'));
+        $('#tableOutput').empty();
+    });
 
     $('#nextWeek').click(function(e) {
         if (activeWeekNumber == 52) {
@@ -51,12 +66,43 @@ $(document).ready(function() {
         activeWeekNumber++;
 
         localStorage.setItem('week', `${activeWeekNumber}-${activeYear}`);
+        localStorage.setItem("weekNumb", activeWeekNumber);
+        localStorage.setItem("year", activeYear);
 
-        UpdateWeekSelector();
-    })
+        updateWeekSelector();
+        updateTabeloutput(localStorage.getItem('week'));
+        $('#tableOutput').empty();
+    });
 
-    function UpdateWeekSelector() {
+    function updateWeekSelector() {
         document.getElementById('week').innerHTML = "Woche " + localStorage.getItem('week');
+    }
+
+    function updateTabeloutput(week) {
+        $.ajax({
+            type: "GET",
+            url: "http://sandbox.gibm.ch/tafel.php?klasse_id=" + localStorage.getItem('klasse_id') + "& woche=" + week,
+            data: { format: 'json' },
+            dataType: 'json'
+        }).done(function(data) {
+            if (data != '' && data != null) {
+                $('#tableOutput').append('<table class="table"><tr><td><b>Datum</b></td><td><b>Wochentag</b></td><td><b>von</b></td><td><b>Bis</b></td><td><b>Lehrer</b></td><td><b>Fach</b></td><td><b>Raum</b></td></tr>');
+                $.each(data, function(key, value) {
+                    $('#tableOutput table').append('<tr><td>' + value.tafel_datum +
+                        '</td><td>' + getDayNameByNumber(value.tafel_wochentag) +
+                        '</td><td>' + value.tafel_von +
+                        '</td><td>' + value.tafel_bis +
+                        '</td><td>' + value.tafel_lehrer +
+                        '</td><td>' + value.tafel_longfach +
+                        '</td><td>' + value.tafel_raum +
+                        '</td></tr>');
+                })
+            } else {
+                $('#tableOutput').html('<div class="alert alert-warning">Keine Daten vorhanden!</div>');
+            }
+        }).fail(function() {
+            $('#tableOutput').html('<div class="alert alert-danger">Fehler ... </div>');
+        })
     }
 
     $.ajax({
@@ -75,7 +121,7 @@ $(document).ready(function() {
         })
     }).fail(function() {
         $('#errorMessage').text("Fehler aufgetreten");
-    })
+    });
 
     function apiClassCall(beruf_id) {
         console.log(beruf_id)
@@ -141,6 +187,8 @@ $(document).ready(function() {
                         '</td><td>' + value.tafel_raum +
                         '</td></tr>');
                 })
+                $('#lastWeek').show();
+                $('#nextWeek').show();
                 $('#week').append("Woche " + moment().format("WW-GGGG"));
                 localStorage.setItem('week', moment().format("WW-GGGG"));
             } else {

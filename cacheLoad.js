@@ -8,6 +8,8 @@ $(document).ready(function() {
 
     if (beruf_id != '' && beruf_id != null) {
         apiClassCall(beruf_id)
+        $('#classTitle').show();
+        $('#classSelector').show();
         if (klasse_id != '' && klasse_id != null) {
             tableFill(klasse_id);
             $('#lastWeek').show();
@@ -20,6 +22,8 @@ $(document).ready(function() {
         $('#classSelector').append('<option>Wählen sie eine Berufsgruppe ... </option>');
         $('#lastWeek').hide();
         $('#nextWeek').hide();
+        $('#classTitle').hide();
+        $('#classSelector').hide();
     }
 
     $('#classSelector').change(function(e) {
@@ -36,6 +40,8 @@ $(document).ready(function() {
         $('#week').empty();
         $('#lastWeek').hide();
         $('#nextWeek').hide();
+        $('#classTitle').show();
+        $('#classSelector').show();
         apiClassCall(this.value);
     })
 

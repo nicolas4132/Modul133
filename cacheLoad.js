@@ -17,6 +17,7 @@ $(document).ready(function() {
         } else {
             $('#lastWeek').hide();
             $('#nextWeek').hide();
+            $('#messageBox').hide();
         }
     } else {
         $('#classSelector').append('<option>Wählen sie eine Berufsgruppe ... </option>');
@@ -24,12 +25,14 @@ $(document).ready(function() {
         $('#nextWeek').hide();
         $('#classTitle').hide();
         $('#classSelector').hide();
+        $('#messageBox').hide();
     }
 
     $('#classSelector').change(function(e) {
         localStorage.setItem('klasse_id', this.value);
         $('#tableOutput').empty();
         $('#week').empty();
+        $('#messageBox').hide();
         tableFill(this.value);
     })
 
@@ -40,6 +43,7 @@ $(document).ready(function() {
         $('#week').empty();
         $('#lastWeek').hide();
         $('#nextWeek').hide();
+        $('#messageBox').hide();
         $('#classTitle').show();
         $('#classSelector').show();
         apiClassCall(this.value);
@@ -81,7 +85,9 @@ $(document).ready(function() {
     });
 
     function updateWeekSelector() {
+        $('#messageBox').empty();
         document.getElementById('week').innerHTML = "Woche " + localStorage.getItem('week');
+        $('#messageBox').append('<div class="alert alert-success">Neue Woche geladen! Woche: ' + localStorage.getItem('week') + ' </div>');
     }
 
     function updateTabeloutput(week) {

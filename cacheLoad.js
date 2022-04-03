@@ -86,6 +86,7 @@ $(document).ready(function() {
 
     function updateWeekSelector() {
         $('#messageBox').empty();
+        $('#messageBox').show();
         document.getElementById('week').innerHTML = "Woche " + localStorage.getItem('week');
         $('#messageBox').append('<div class="alert alert-success">Neue Woche geladen! Woche: ' + localStorage.getItem('week') + ' </div>');
     }

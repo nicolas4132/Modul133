@@ -141,7 +141,7 @@ $(document).ready(function() {
         $('#messageBox').empty();
         $('#messageBox').show();
         //Html Element mit Woche und Jahr füllen 
-        document.getElementById('week').innerHTML = "Woche " + localStorage.getItem('week');
+        $('#week').html("Woche " + localStorage.getItem('week'));
         //MessageBox füllen mit der Woche und Jahr
         $('#messageBox').append('<div class="alert alert-success">Neue Woche geladen! Woche: ' + localStorage.getItem('week') + ' </div>');
     }

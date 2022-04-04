@@ -87,10 +87,10 @@ $(document).ready(function() {
         localStorage.setItem("year", activeYear);
         //Methoden aufruf für Week-Selector ändern
         updateWeekSelector();
-        //Tabelle mit Studenplan aktualiseren und Woche und Jahr mitgeben
-        updateTabeloutput(localStorage.getItem('week'));
         //Tabellen output leeren
         $('#tableOutput').empty();
+        //Tabelle mit Studenplan aktualiseren und Woche und Jahr mitgeben
+        updateTabeloutput(localStorage.getItem('week'));
     });
 
     //Nächste Woche Button Click-Listener
@@ -108,10 +108,10 @@ $(document).ready(function() {
         localStorage.setItem("year", activeYear);
         //Methoden aufruf für Week-Selector ändern
         updateWeekSelector();
-        //Tabelle mit Studenplan aktualiseren und Woche und Jahr mitgeben
-        updateTabeloutput(localStorage.getItem('week'));
         //Tabellen output leeren
         $('#tableOutput').empty();
+        //Tabelle mit Studenplan aktualiseren und Woche und Jahr mitgeben
+        updateTabeloutput(localStorage.getItem('week'));
     });
 
     //Wochen Selector aktualisieren
@@ -148,10 +148,10 @@ $(document).ready(function() {
                         '</td></tr>');
                 })
             } else {
-                $('#tableOutput').html('<div class="alert alert-warning">Keine Daten vorhanden!</div>');
+                $('#tableOutput').html('<div class="alert alert-warning">Keine Daten für Stundenplan vorhanden!</div>');
             }
         }).fail(function() {
-            $('#tableOutput').html('<div class="alert alert-danger">Fehler konnte nicht gefüllt werden!</div>');
+            $('#tableOutput').html('<div class="alert alert-danger">Fehler Stundenplan konnte nicht gefüllt werden!</div>');
         })
     }
 
@@ -172,7 +172,7 @@ $(document).ready(function() {
             }
         })
     }).fail(function() {
-        $('#errorMessage').text("Fehler aufgetreten");
+        $('#errorMessage').text("Berufe konnten nicht geladen werden");
     });
 
     //Klassen Selector befüllen mithilfe von der Beruf ID
@@ -196,7 +196,7 @@ $(document).ready(function() {
                 }
             })
         }).fail(function() {
-            $('#errorMessage').text("Fehler aufgetreten");
+            $('#errorMessage').text("Klassen konnten nicht geladen werden!");
         })
     }
 
@@ -250,10 +250,10 @@ $(document).ready(function() {
                 $('#week').append("Woche " + moment().format("WW-GGGG"));
                 localStorage.setItem('week', moment().format("WW-GGGG"));
             } else {
-                $('#tableOutput').html('<div class="alert alert-warning">Fehler...</div>');
+                $('#tableOutput').html('<div class="alert alert-warning">Keine Daten für Studenplan vorhanden!</div>');
             }
         }).fail(function() {
-            $('#tableOutput').html('<div class="alert alert-danger">Fehler ... </div>');
+            $('#tableOutput').html('<div class="alert alert-danger">Studenplan konnte nicht geladen werden!</div>');
         })
     }
 

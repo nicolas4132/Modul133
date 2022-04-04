@@ -41,6 +41,7 @@ $(document).ready(function() {
 
     //Change-Listener für den Klassen Selector
     $('#classSelector').change(function(e) {
+        //Dropdown Auswahl ungleich Ihre Auswahl?
         if (this.value != 'Ihre Auswahl ...') {
             //Im LocalStorage die Klassen-ID setzten
             localStorage.setItem('klasse_id', this.value);
@@ -52,6 +53,7 @@ $(document).ready(function() {
             //Methode für Tabelle füllen aufrufen und klassen id mitgeben
             tableFill(this.value);
         } else {
+            //Stundenplan Elemente leeren und verstecken
             $('#tableOutput').empty();
             $('#week').empty();
             $('#lastWeek').hide();
@@ -61,6 +63,7 @@ $(document).ready(function() {
 
     //Change-Listener für Berufsauswahl aufrufen
     $('#jobSelector').change(function(e) {
+        //Dropdown Auswahl ungleich Ihre Auswahl?
         if (this.value != 'Ihre Auswahl ...') {
             //localStorage Beruf-id setzten
             localStorage.setItem('beruf_id', this.value);
@@ -79,6 +82,7 @@ $(document).ready(function() {
             //Methode um Klassen-Selector füllen aufrufen und berufs-id mitgeben
             apiClassCall(this.value);
         } else {
+            //alle elemente ausser Berufsauswahl verstecken oder leeren
             $('#errorMessage').hide();
             $('#classTitle').hide();
             $('#classSelector').hide();

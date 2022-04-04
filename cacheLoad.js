@@ -21,9 +21,6 @@ $(document).ready(function() {
         if (klasse_id != '' && klasse_id != null) {
             //Methodenaufruf und klassen id mitgeben
             tableFill(klasse_id);
-            //Die Wochen-Wechsler Buttons anzeigen
-            $('#lastWeek').show();
-            $('#nextWeek').show();
         } else {
             //falls zweites if nicht zutrifft die Wochen-Buttons nicht anzeigen und die MessageBox
             $('#lastWeek').hide();
@@ -44,32 +41,52 @@ $(document).ready(function() {
 
     //Change-Listener für den Klassen Selector
     $('#classSelector').change(function(e) {
-        //Im LocalStorage die Klassen-ID setzten
-        localStorage.setItem('klasse_id', this.value);
-        //Stündenplan output aus der Tabelle löschen
-        $('#tableOutput').empty();
-        //den Wochen und Jahr anzeiger leeren und die MessageBox verstecken
-        $('#week').empty();
-        $('#messageBox').hide();
-        //Methode für Tabelle füllen aufrufen und klassen id mitgeben
-        tableFill(this.value);
+        if (this.value != 'Ihre Auswahl ...') {
+            //Im LocalStorage die Klassen-ID setzten
+            localStorage.setItem('klasse_id', this.value);
+            //Stündenplan output aus der Tabelle löschen
+            $('#tableOutput').empty();
+            //den Wochen und Jahr anzeiger leeren und die MessageBox verstecken
+            $('#week').empty();
+            $('#messageBox').hide();
+            //Methode für Tabelle füllen aufrufen und klassen id mitgeben
+            tableFill(this.value);
+        } else {
+            $('#tableOutput').empty();
+            $('#week').empty();
+            $('#lastWeek').hide();
+            $('#nextWeek').hide();
+        }
     })
 
     //Change-Listener für Berufsauswahl aufrufen
     $('#jobSelector').change(function(e) {
-        //localStorage Beruf-id setzten
-        localStorage.setItem('beruf_id', this.value);
-        //alle Elemente ausser den Berufs-Selector und Berufs-Titel 
-        $('#classSelector').empty();
-        $('#tableOutput').empty();
-        $('#week').empty();
-        $('#lastWeek').hide();
-        $('#nextWeek').hide();
-        $('#messageBox').hide();
-        $('#classTitle').show();
-        $('#classSelector').show();
-        //Methode um Klassen-Selector füllen aufrufen und berufs-id mitgeben
-        apiClassCall(this.value);
+        if (this.value != 'Ihre Auswahl ...') {
+            //localStorage Beruf-id setzten
+            localStorage.setItem('beruf_id', this.value);
+            //Klassen ID auf leer setzten
+            localStorage.setItem('klasse_id', '');
+            //alle Elemente ausser den Berufs-Selector und Berufs-Titel 
+            $('#classSelector').empty();
+            $('#tableOutput').empty();
+            $('#week').empty();
+            $('#lastWeek').hide();
+            $('#nextWeek').hide();
+            $('#messageBox').hide();
+            $('#classTitle').show();
+            $('#classSelector').show();
+            $('#errorMessage').hide();
+            //Methode um Klassen-Selector füllen aufrufen und berufs-id mitgeben
+            apiClassCall(this.value);
+        } else {
+            $('#errorMessage').hide();
+            $('#classTitle').hide();
+            $('#classSelector').hide();
+            $('#tableOutput').empty();
+            $('#week').empty();
+            $('#lastWeek').hide();
+            $('#nextWeek').hide();
+        }
     })
 
     //Click-Listener für den Woche-Zurück Button
@@ -172,34 +189,39 @@ $(document).ready(function() {
             }
         })
     }).fail(function() {
-        $('#errorMessage').text("Berufe konnten nicht geladen werden");
+        $('#errorMessage').show();
+        $('#errorMessage').html('<div class="alert alert-danger">Berufe konnten nicht geladen werden!</div>');
     });
-
     //Klassen Selector befüllen mithilfe von der Beruf ID
     function apiClassCall(beruf_id) {
-        console.log(beruf_id)
         $.ajax({
             type: "GET",
             url: "http://sandbox.gibm.ch/klassen.php?beruf_id=" + beruf_id,
             data: { format: 'JSON' },
             dataType: 'json'
         }).done(function(data) {
-            //Befüllung des Selectors
-            $('#classSelector').append('<option>Ihre Auswahl ... </option>');
-            $.each(data, function(key, value) {
-                console.log(value)
-                if (value.klasse_id == localStorage.getItem('klasse_id')) {
-                    console.log("hallo")
-                    $('#classSelector').append('<option value="' + value.klasse_id + '" selected>' + value.klasse_longname + '</option>')
-                } else {
-                    $('#classSelector').append('<option value=' + value.klasse_id + '>' + value.klasse_longname + '</option>')
-                }
-            })
+            if (data != null && data != '') {
+                //Befüllung des Selectors
+                $('#classSelector').append('<option>Ihre Auswahl ... </option>');
+                $.each(data, function(key, value) {
+                    if (value.klasse_id == localStorage.getItem('klasse_id')) {
+                        $('#classSelector').append('<option value="' + value.klasse_id + '" selected>' + value.klasse_longname + '</option>')
+                    } else {
+                        $('#classSelector').append('<option value=' + value.klasse_id + '>' + value.klasse_longname + '</option>')
+                    }
+                })
+            } else {
+                //den Klassen Selector und Titel nicht anzeigen
+                $('#classTitle').hide();
+                $('#classSelector').hide();
+                $('#errorMessage').show();
+                $('#errorMessage').html('<div class="alert alert-warning">Keine Klassen für diesen Beruf vorhanden!</div>');
+            }
         }).fail(function() {
-            $('#errorMessage').text("Klassen konnten nicht geladen werden!");
+            $('#errorMessage').show();
+            $('#errorMessage').html('<div class="alert alert-warning">Klassen konnten nicht geladen werden!</div>');
         })
     }
-
     //Array für Studenplan Wochen ermittlung
     function getDayNameByNumber(number) {
         var day = parseInt(number);
